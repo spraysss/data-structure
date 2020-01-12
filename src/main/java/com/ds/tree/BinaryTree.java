@@ -10,6 +10,16 @@ public class BinaryTree {
         this.root = root;
     }
 
+    static class BiNode {
+
+        char data;
+        BiNode left;
+        BiNode right;
+
+        public BiNode(char data) {
+            this.data = data;
+        }
+    }
 
     private static int i = 0;//Record string position on recursion
 
@@ -40,17 +50,6 @@ public class BinaryTree {
 
     }
 
-    private
-    static class BiNode {
-
-        char data;
-        BiNode left;
-        BiNode right;
-
-        public BiNode(char data) {
-            this.data = data;
-        }
-    }
 
     /**
      * Recursive implementation of preOrder traversal
