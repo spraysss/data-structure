@@ -159,20 +159,27 @@ public class BinaryTree {
      */
     public void postOrderTraverse() {
         System.out.println("postOrder Traverse use Stack:");
-        BiNode node = root;
-        if (node != null) {
+        BiNode lastVisit = root;
+        if (lastVisit != null) {
             Stack<BiNode> stack = new Stack<>();
-            stack.push(node);
-            BiNode c;
+            stack.push(lastVisit);
+            BiNode top;
             while (!stack.isEmpty()) {
-                c = stack.peek();
-                if (c.left != null && node != c.left && node != c.right) {
-                    stack.push(c.left);
-                } else if (c.right != null && node != c.right) {
-                    stack.push(c.right);
+                top = stack.peek();
+                //the stack top node has left child ,before we put it in stack we should Exclude the following case:
+                //case 1:  node = topNode.left this means we just visit the stack top node's left node  last time, put again will cause duplicate  ,So we need to eliminate this situation，therefore node = !topNode.left
+                //case 2:  node = topNode.right  this means we just visit the stack top node's right node, Now that you have visited the right node, you must have visited the left node  ,So we also need to eliminate this situation，therefore node = !topNode.right
+                if (top.left != null && lastVisit != top.left && lastVisit != top.right) {
+                    stack.push(top.left);
+                 //the stack top node has right child ,before we put it in stack we should Exclude the following case:
+                 //node = topNode.right  this means we just visit the stack top node's right node last time, put again will cause duplicate  ,So we need to eliminate this situation，therefore node = !topNode.right
+                 //node == topNode.right is ok ,because this means we just visit the stack top node's left node ,now it time to deal with the right subtree
+                } else if (top.right != null && lastVisit != top.right) {
+                    stack.push(top.right);
+                //it's time to visit the stack's top node ,because it's left and right node is null or we have visit it's left subtree and right subtree
                 } else {
                     visit(stack.pop());
-                    node = c;
+                    lastVisit = top;
                 }
             }
         }
