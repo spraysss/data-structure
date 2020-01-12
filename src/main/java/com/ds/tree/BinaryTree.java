@@ -11,14 +11,14 @@ public class BinaryTree {
     }
 
 
-    private static int i = 0;//递归时记录字符串的位置
+    private static int i = 0;//Record string position on recursion
 
     /**
-     * @param s 前序遍历字符串，#代表空指针
-     * @return 通过前序遍历产生的二叉树
+     * @param s preOrder string represent of Binary Tree， # mean nil
+     * @return Binary Tree construct by the preOrder string
      */
     public static BinaryTree createBiTree(String s) {
-        System.out.println("使用前序序列: "+s+" 创建二叉树");
+        System.out.println("createBiTree with preOrder String : " + s);
         i = 0;
         return new BinaryTree(BinaryTree.createBiTreeNode(s));
     }
@@ -26,14 +26,14 @@ public class BinaryTree {
 
     private static BiNode createBiTreeNode(String s) {
         BiNode node = null;
-        if (s.charAt(i) != '#') {//字符不为# ，往下递归
+        if (s.charAt(i) != '#') {// char is not #， do recursion
             node = new BiNode(s.charAt(i));
-            i++;
-            node.lChlid = createBiTreeNode(s);
-            node.rChild = createBiTreeNode(s);
+            i++; // when successful create a BiNode ,increase string index
+            node.left = createBiTreeNode(s);
+            node.right = createBiTreeNode(s);
 
 
-        } else {// 遇到# 字符串向后偏移一位
+        } else {// Character # encountered, increase  string index
             i++;
         }
         return node;
@@ -44,8 +44,8 @@ public class BinaryTree {
     static class BiNode {
 
         char data;
-        BiNode lChlid;
-        BiNode rChild;
+        BiNode left;
+        BiNode right;
 
         public BiNode(char data) {
             this.data = data;
@@ -53,11 +53,11 @@ public class BinaryTree {
     }
 
     /**
-     * 先序遍历递归实现
+     * Recursive implementation of preOrder traversal
      */
 
     public void perOrderTraverseRecursive() {
-        System.out.println("先序遍历:");
+        System.out.println("perOrderTraverseRecursive:");
         perOrderTraverseRecursive(root);
         System.out.println();
     }
@@ -65,17 +65,17 @@ public class BinaryTree {
     private void perOrderTraverseRecursive(BiNode node) {
         if (node != null) {
             visit(node);
-            perOrderTraverseRecursive(node.lChlid);
-            perOrderTraverseRecursive(node.rChild);
+            perOrderTraverseRecursive(node.left);
+            perOrderTraverseRecursive(node.right);
         }
     }
 
     /**
-     * 中序遍历递归实现
+     * Recursive implementation of inOrder traversal
      */
 
     public void inOrderTraverseRecursive() {
-        System.out.println("中序遍历:");
+        System.out.println("inOrderTraverseRecursive:");
         inOrderTraverseRecursive(root);
         System.out.println();
     }
@@ -83,84 +83,108 @@ public class BinaryTree {
     private void inOrderTraverseRecursive(BiNode node) {
 
         if (node != null) {
-            inOrderTraverseRecursive(node.lChlid);
+            inOrderTraverseRecursive(node.left);
             visit(node);
-            inOrderTraverseRecursive(node.rChild);
+            inOrderTraverseRecursive(node.right);
         }
     }
 
 
     /**
-     * 后序遍历递归实现
+     * Recursive implementation of postOrder traversal
      */
     public void postOrderTraverseRecursive() {
-        System.out.println("后序遍历:");
+        System.out.println("postOrderTraverseRecursive:");
         postOrderTraverseRecursive(root);
         System.out.println();
     }
 
     private void postOrderTraverseRecursive(BiNode node) {
         if (node != null) {
-            postOrderTraverseRecursive(node.lChlid);
-            postOrderTraverseRecursive(node.rChild);
+            postOrderTraverseRecursive(node.left);
+            postOrderTraverseRecursive(node.right);
             visit(node);
         }
 
     }
 
     /**
-     * 使用Stack实现的非递归前序遍历
+     * Stack implementation of preOrder traversal
      */
 
     public void preOrderTraverse() {
-        System.out.println("非递归前序遍历:");
+        System.out.println("preOrder Traverse use Stack:");
         Stack<BiNode> nodeStack = new Stack<>();
         BiNode node = root;
         while (!nodeStack.isEmpty() || node != null) {
             while (node != null) {
                 visit(node);
                 nodeStack.push(node);
-                node = node.lChlid;
+                node = node.left;
 
             }
             if (!nodeStack.isEmpty()) {
                 node = nodeStack.pop();
-                node = node.rChild;
+                node = node.right;
             }
         }
         System.out.println();
     }
 
     /**
-     * 使用Stack实现的非递归中序遍历
+     * Stack implementation of inOrder traversal
      */
 
     public void inOrderTraverse() {
 
-        System.out.println("非递归中序遍历:");
+        System.out.println("inOrder Traverse use Stack:");
         Stack<BiNode> nodeStack = new Stack<>();
         BiNode node = root;
         while (!nodeStack.isEmpty() || node != null) {
             while (node != null) {
                 nodeStack.push(node);
-                node = node.lChlid;
+                node = node.left;
 
             }
             if (!nodeStack.isEmpty()) {
                 node = nodeStack.pop();
                 visit(node); //访问根结点
-                node = node.rChild;
+                node = node.right;
             }
         }
         System.out.println();
     }
 
+    /**
+     * Stack implementation of postOrder traversal
+     */
+    public void postOrderTraverse() {
+        System.out.println("postOrder Traverse use Stack:");
+        BiNode node = root;
+        if (node != null) {
+            Stack<BiNode> stack = new Stack<>();
+            stack.push(node);
+            BiNode c;
+            while (!stack.isEmpty()) {
+                c = stack.peek();
+                if (c.left != null && node != c.left && node != c.right) {
+                    stack.push(c.left);
+                } else if (c.right != null && node != c.right) {
+                    stack.push(c.right);
+                } else {
+                    visit(stack.pop());
+                    node = c;
+                }
+            }
+        }
+        System.out.println();
+    }
 
     /**
-     * 使用双栈实现二叉树的后序遍历
+     * Double Stack implementation of postOrder traversal
      */
     public void postOrderTraverseWithDoubleStack() {
-        System.out.println("使用双栈实现的非递归后序遍历:");
+        System.out.println("postOrderTraverse use Double Stack:");
         BiNode node = root;
         if (node != null) {
             Stack<BiNode> s1 = new Stack<>();
@@ -169,11 +193,11 @@ public class BinaryTree {
             while (!s1.isEmpty()) {
                 node = s1.pop();
                 s2.push(node);
-                if (node.lChlid != null) {
-                    s1.push(node.lChlid);
+                if (node.left != null) {
+                    s1.push(node.left);
                 }
-                if (node.rChild != null) {
-                    s1.push(node.rChild);
+                if (node.right != null) {
+                    s1.push(node.right);
                 }
             }
             while (!s2.isEmpty()) {
@@ -184,7 +208,23 @@ public class BinaryTree {
         System.out.println();
     }
 
+    public void levelOrderTraverse() {
 
+    }
+
+    public BiNode search(char data) {
+        return null;
+    }
+
+    public BiNode delete(char data) {
+        return null;
+    }
+
+    /**
+     * visit the node
+     *
+     * @param node
+     */
     private void visit(BiNode node) {
         System.out.print(node.data + " ");
     }
@@ -196,6 +236,7 @@ public class BinaryTree {
         binaryTree.postOrderTraverseRecursive();
         binaryTree.preOrderTraverse();
         binaryTree.inOrderTraverse();
+        binaryTree.postOrderTraverse();
         binaryTree.postOrderTraverseWithDoubleStack();
     }
 }
