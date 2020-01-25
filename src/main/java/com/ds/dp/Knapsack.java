@@ -1,6 +1,13 @@
 package com.ds.dp;
 
 public class Knapsack {
+    /**
+     *
+     * @param C 背包的容量
+     * @param v 物品的价格表
+     * @param w 物品的重量表
+     * @return
+     */
     public static int knapsack01(int C, int[] v, int[] w) {
         int dp[][] = new int[v.length + 1][C + 1];
         for (int i = 1; i <= v.length; i++) {
